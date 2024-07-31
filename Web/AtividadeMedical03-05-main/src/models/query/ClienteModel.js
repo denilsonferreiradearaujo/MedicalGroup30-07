@@ -37,12 +37,12 @@ async function insert(cliente, endereco, telefone, funcionario, login, perfil, e
         // Adicionar automaticamente na tabela `tbl_paciente`
         await connection.query('INSERT INTO tbl_paciente (pessoa_id) VALUES (?)', [pessoaId]);
         // console.log('RESULTADO INSERT PACIENTE =>', resPaciente);
-        
+
         let funcionarioId = null;
         if (funcionario !== null) {
             const resFuncionario = await connection.query('INSERT INTO tbl_funcionario (data_admissao, crm, pessoa_id, pessoa_endereco_id) VALUES (?, ?, ?, ?)', [funcionario.data_admissao, funcionario.crm, pessoaId, enderecoId])
             funcionarioId = resFuncionario[0].insertId;
-        } 
+        }
 
         // console.log(login);
         const resLogin = await connection.query('INSERT INTO tbl_login (login, senha, status, pessoa_id, pessoa_endereco_id) VALUES ( ?, ?, ?, ?, ?)', [login.login, login.senha, login.status, pessoaId, enderecoId])
@@ -51,11 +51,11 @@ async function insert(cliente, endereco, telefone, funcionario, login, perfil, e
         // console.log(perfil);
         await connection.query('INSERT INTO tbl_perfis (tipo, login_id, login_pessoa_id, login_pessoa_endereco_id) VALUES (?, ?, ?, ?)', [perfil.tipo, loginId, pessoaId, enderecoId])
 
-        if (especialidade !== null){
+        if (especialidade !== null) {
             const resEspecialidade = await connection.query('INSERT INTO tbl_especialidade (desc_especialidade) VALUES (?)', [especialidade.desc_especialidade]);
             const especialidadeId = resEspecialidade[0].insertId;
 
-            await connection.query('INSERT INTO tbl_funcionario_has_tbl_especialidade (funcionario_id, funcionario_pessoa_id, funcionario_pessoa_endereco_id, especialidade_id) VALUES (?, ?, ?, ?)',  [funcionarioId, pessoaId, enderecoId, especialidadeId])
+            await connection.query('INSERT INTO tbl_funcionario_has_tbl_especialidade (funcionario_id, funcionario_pessoa_id, funcionario_pessoa_endereco_id, especialidade_id) VALUES (?, ?, ?, ?)', [funcionarioId, pessoaId, enderecoId, especialidadeId])
         }
 
         await connection.commit();
@@ -208,12 +208,63 @@ async function remove(cpf) {
 
 async function agendarConsulta(consulta) {
     const connection = await conectarBancoDeDados();
+    console.log(consulta)
     try {
+        // Recupera os dados necessários
+        const [rows] = await connection.query(`
+            SELECT 
+                tbl_paciente.id AS paciente_id, 
+                tbl_paciente.pessoa_id AS paciente_pessoa_id, 
+                tbl_funcionario.id AS funcionario_id, 
+                tbl_funcionario.pessoa_id AS funcionario_pessoa_id
+            FROM 
+                tbl_paciente
+            INNER JOIN 
+                tbl_pessoa AS paciente_pessoa ON tbl_paciente.pessoa_id = paciente_pessoa.id
+            INNER JOIN 
+                tbl_funcionario ON tbl_funcionario.pessoa_id = paciente_pessoa.id
+            INNER JOIN 
+                tbl_pessoa AS funcionario_pessoa ON tbl_funcionario.pessoa_id = funcionario_pessoa.id
+            WHERE 
+                tbl_paciente.id = ? `,
+            [consulta.funcionario_id]);
+
+        console.log(rows);
+        if (rows.length === 0) {
+                return { status: 404, message: "Paciente ou funcionário não encontrado." };
+        }
+
+        const [ws] = await connection.query(`
+            SELECT 
+                tbl_paciente.id AS paciente_id, 
+                tbl_paciente.pessoa_id AS paciente_pessoa_id, 
+                tbl_funcionario.id AS funcionario_id, 
+                tbl_funcionario.pessoa_id AS funcionario_pessoa_id
+            FROM 
+                tbl_paciente
+            INNER JOIN 
+                tbl_pessoa AS paciente_pessoa ON tbl_paciente.pessoa_id = paciente_pessoa.id
+            INNER JOIN 
+                tbl_funcionario ON tbl_funcionario.pessoa_id = paciente_pessoa.id
+            INNER JOIN 
+                tbl_pessoa AS funcionario_pessoa ON tbl_funcionario.pessoa_id = funcionario_pessoa.id
+            WHERE 
+                tbl_paciente.id = ?`,
+            [consulta.paciente_id]);
+        
+        console.log(ws);
+        if (ws.length === 0) {
+            return { status: 404, message: "Paciente ou funcionário não encontrado." };
+        }
+
+        const { funcionario_id } = rows[0];
+        const { paciente_id } = ws[0];
+
         // Insere os dados no banco de dados
         await connection.query(`
             INSERT INTO tbl_consulta (data, hora, status, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)`, 
-            [consulta.data, consulta.hora, consulta.status, consulta.paciente_id, consulta.paciente_pessoa_id, consulta.funcionario_id, consulta.funcionario_pessoa_id]);
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [consulta.dataAgenda, consulta.horaAgenda, 'Ativa', paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id]);
 
         return { status: 200, message: "Consulta agendada com sucesso!" };
     } catch (error) {
@@ -223,6 +274,8 @@ async function agendarConsulta(consulta) {
         connection.end();
     }
 }
+
+
 
 async function buscarPerfilPorLogin(login, senha) {
     const connection = await conectarBancoDeDados();
@@ -289,9 +342,9 @@ async function selecionaPacientesBd() {
 
  `  );
 
-    // console.log(rows)
+        // console.log(rows)
         return rows;
-        
+
     } catch (error) {
         console.log(error.message);
         return error.message;
@@ -312,9 +365,9 @@ async function selecionaMedicosBd() {
             WHERE tbl_perfis.tipo = 'medico';
         `  );
 
-    // console.log(rows)
+        // console.log(rows)
         return rows;
-        
+
     } catch (error) {
         console.log(error.message);
         return error.message;
@@ -323,4 +376,4 @@ async function selecionaMedicosBd() {
     }
 }
 
-module.exports = { selecionaMedicosBd ,selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };
+module.exports = { selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };

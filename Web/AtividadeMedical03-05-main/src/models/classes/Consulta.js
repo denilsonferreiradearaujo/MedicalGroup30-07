@@ -2,12 +2,13 @@ class Consulta {
 
     constructor(pCon) {
         this.id = (pCon.id !== null || pCon.id > 0) ? pCon.id : null;
-        this.DataConvert(pCon.data);
-        this.hora = pCon.hora;
-        this.status = pCon.status;
-        this.paciente_id = (pCon.paciente_id !== null || pCon.paciente_id > 0) ? pCon.paciente_id : null;
+        // this.DataConvert(pCon.data);
+        this.data=pCon.dataAgenda;
+        this.hora = pCon.horaAgenda;
+        this.status = (pCon.status !== null || pCon.status != '') ? pCon.status : null;
+        this.paciente_id = (pCon.paciente !== null || pCon.paciente > 0) ? pCon.paciente : null;
         this.paciente_pessoa_id = (pCon.paciente_pessoa_id !== null || pCon.paciente_pessoa_id > 0) ? pCon.paciente_pessoa_id : null;
-        this.funcionario_id = (pCon.funcionario_id !== null || pCon.funcionario_id > 0) ? pCon.funcionario_id : null;
+        this.funcionario_id = (pCon.medico !== null || pCon.medico > 0) ? pCon.medico : null;
         this.funcionario_pessoa_id = (pCon.funcionario_pessoa_id !== null || pCon.funcionario_pessoa_id > 0) ? pCon.funcionario_pessoa_id : null;
     }
 

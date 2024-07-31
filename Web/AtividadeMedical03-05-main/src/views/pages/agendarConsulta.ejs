@@ -36,22 +36,22 @@
 
                                 <div class="form-floating mb-3 col-md-5">
                                     <div>
-                                        <input type="radio" id="especialidade1" name="especialidade" value="cardiologia"
+                                        <input type="radio" id="especialidade1" name="especialidade" value="4"
                                             required>
                                         <label for="especialidade1">Cardiologia</label>
                                     </div>
                                     <div>
-                                        <input type="radio" id="especialidade2" name="especialidade" value="pediatria">
+                                        <input type="radio" id="especialidade2" name="especialidade" value="1">
                                         <label for="especialidade2">Pediatria</label>
                                     </div>
                                     <div>
                                         <input type="radio" id="especialidade1" name="especialidade"
-                                            value="clinico-geral">
+                                            value="5">
                                         <label for="especialidade1">Clínico Geral</label>
                                     </div>
                                     <div>
                                         <input type="radio" id="especialidade2" name="especialidade"
-                                            value="oftalmologo">
+                                            value="2">
                                         <label for="especialidade2">Oftalmologista</label>
                                     </div>
                                 </div>
@@ -59,21 +59,21 @@
                                 <div class=" form-floating mb-3 col-md-5">
                                     <div>
                                         <input type="radio" id="especialidade3" name="especialidade"
-                                            value="nutricionista">
+                                            value="6">
                                         <label for="especialidade3">Nutricionista</label>
                                     </div>
                                     <div>
                                         <input type="radio" id="especialidade4" name="especialidade"
-                                            value="ginecologista">
+                                            value="7">
                                         <label for="especialidade4">Ginecologista</label>
                                     </div>
                                     <div>
-                                        <input type="radio" id="especialidade5" name="especialidade" value="pediatra">
-                                        <label for="especialidade5">Pediatra</label>
+                                        <input type="radio" id="especialidade5" name="especialidade" value="9">
+                                        <label for="especialidade5">Pneumologista</label>
                                     </div>
                                     <div>
                                         <input type="radio" id="especialidade6" name="especialidade"
-                                            value="ortopedista">
+                                            value="8">
                                         <label for="especialidade6">Ortopedista</label>
                                     </div>
                                 </div>
@@ -88,14 +88,15 @@
                     <legend class="col-form-label col-sm-6 pt-0" style="font-weight: bold;">Seleção de Médico</legend>
                     <div class="container">
 
-                        <select id="selectMedico" class="form-select col-md-12">
+                        <select name="medico" id="selectMedico" class="form-select col-md-12">
+
                             <option selected>Escolha o médico</option>
                             <% medicos.forEach((subject, index)=>{ %>
-                                <option value=" <% medicos.funcionario_id %>">
+                                <option value="<%- subject.funcionario_id %>">
                                     <%- subject.funcionario_nome %>
 
                                 </option>
-                            <% }) %>
+                                <% }) %>
                         </select>
                     </div>
                 </fieldset>
@@ -104,14 +105,14 @@
                 <fieldset class="form-group mb-5">
                     <legend class="col-form-label col-sm-6 pt-0" style="font-weight: bold;">Seleção de Paciente</legend>
                     <div class="container">
-                        <select id="selectPaciente" class="form-select col-md-12">
+                        <select name="paciente" id="selectPaciente" class="form-select col-md-12">
                             <option selected>Escolha o paciente</option>
                             <% pacientes.forEach((subject, index)=>{ %>
-                                <option value=" <% pacientes.paciente_id %>">
+                                <option value="<%- subject.paciente_id %>">
                                     <%- subject.paciente_nome %>
 
                                 </option>
-                            <% }) %>
+                                <% }) %>
                         </select>
                     </div>
                 </fieldset>
