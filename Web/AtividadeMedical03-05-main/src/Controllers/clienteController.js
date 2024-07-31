@@ -93,7 +93,36 @@ const clienteController = {
         }
     },
 
+    loginMobile: async (req, res) => {
+        try {
+            const { login, senha } = req.body;
 
+            // Verifica o tipo de perfil com base no login e senha
+            const tipoPerfil = await buscarPerfilPorLogin(login, senha);
+
+            if (!tipoPerfil) {
+                return res.json({ usuarioLogado: false, error: 'Login ou senha inválidos!' });
+            }
+
+            // Normaliza o tipo de perfil para lowercase e remove acentos para evitar problemas de comparação
+            const tipoPerfilNormalizado = removerAcentos(tipoPerfil.toLowerCase());
+            return res.json( {tipoPerfilNormalizado:tipoPerfilNormalizado, usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
+            // Redirecionar com base no tipo de perfil
+            // switch (tipoPerfilNormalizado) {
+            //     case 'paciente':
+            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
+            //     case 'medico':
+            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
+            //     case 'funcionario':
+            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
+            //     default:
+            //         throw new Error('Tipo de perfil desconhecido!');
+            // }
+        } catch (error) {
+            console.log(error);
+            return res.json( { usuarioLogado: false, error: 'Erro ao fazer login. Tente novamente.' });
+        }
+    },
     adicionarCliente: async (req, res) => {
         try {
 

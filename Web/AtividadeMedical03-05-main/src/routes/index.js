@@ -17,6 +17,7 @@ router.get('/agendarConsulta', Controller.agendar); // Rota de exemplo que usa l
 router.post('/cadastro', Controller.adicionarCliente);
 router.post('/agendarConsulta', Controller.agendarConsulta);
 router.post('/login', Controller.login); // Rota para o processo de login
+router.post('/loginMobile', Controller.loginMobile); // Rota para o processo de logout
 
 // Rotas PUT e DELETE
 router.put('/cliente/:cpf', Controller.atualizarCliente);

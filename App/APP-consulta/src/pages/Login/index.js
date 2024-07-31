@@ -101,28 +101,26 @@
 
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import api from '../../service/api';
 
 const Login = ({ navigation }) => {
     const [login, setLogin] = useState('');
     const [senha, setSenha] = useState('');
 
-    const handleLogin = () => {
-        // Dados fixos para validação local
-        const users = [
-            { login: 'paciente', senha: '1234', tipo: 'paciente' },
-            { login: 'medico', senha: '1234', tipo: 'medico' },
-        ];
-
-        const user = users.find(user => user.login === login && user.senha === senha);
-
-        if (user) {
-            if (user.tipo === 'paciente') {
+    const handleLogin = async () => {
+        try {
+            const response = await api.post('/loginMobile', { login, senha });
+            const { perfil } = response.data;
+            console.log(response);
+            if (perfil.tipo === 'paciente' || perfil.tipo === 'Paciente') {
                 navigation.navigate('Paciente');
-            } else if (user.tipo === 'medico') {
+            } else if (perfil.tipo === 'medico' || perfil.tipo === 'Médico' || perfil.tipo === 'médico') {
                 navigation.navigate('Medico');
+            } else {
+                Alert.alert('Perfil desconhecido', 'Não foi possível identificar o perfil do usuário.');
             }
-        } else {
-            Alert.alert('Erro', 'Credenciais inválidas. Verifique suas informações e tente novamente.');
+        } catch (error) {
+            Alert.alert('Erro', 'Erro ao fazer login. Verifique suas credenciais e tente novamente.');
         }
     };
 
@@ -162,7 +160,7 @@ const Login = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#e3f2fd', // Azul claro para o fundo
+        backgroundColor: '#e3f2fd',
     },
     scrollContainer: {
         flexGrow: 1,
@@ -174,19 +172,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 40,
         textAlign: 'center',
-        color: '#0277bd', // Azul escuro para o título
+        color: '#0277bd',
     },
     input: {
         height: 50,
-        borderColor: '#81d4fa', // Azul claro para a borda
+        borderColor: '#81d4fa',
         borderWidth: 1,
         borderRadius: 10,
         marginBottom: 20,
         paddingHorizontal: 16,
-        backgroundColor: '#ffffff', // Fundo branco para o campo de entrada
+        backgroundColor: '#ffffff',
     },
     button: {
-        backgroundColor: '#0288d1', // Azul intenso para o botão
+        backgroundColor: '#0288d1',
         paddingVertical: 15,
         borderRadius: 10,
         alignItems: 'center',
@@ -200,5 +198,6 @@ const styles = StyleSheet.create({
 });
 
 export default Login;
+
 
 
