@@ -212,26 +212,26 @@ const clienteController = {
     },
 
     agendarConsulta: async (req, res) => {
+        
         try {
-            const { data, hora, status, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id } = req.body;
+            const { dataAgenda, horaAgenda, especialidade, medico, paciente } = req.body;
 
             // Verifica se todos os campos obrigatórios estão presentes
-            if (!data || !hora || !status || !paciente_id || !paciente_pessoa_id || !funcionario_id || !funcionario_pessoa_id) {
+            if (!dataAgenda || !horaAgenda || !especialidade || !medico || !paciente ) {
                 return res.status(400).json({ message: "Todos os campos são obrigatórios." });
             }
-
+            console.log(dataAgenda)
             const consulta = new Consulta({
-                data,
-                hora,
-                status,
-                paciente_id,
-                paciente_pessoa_id,
-                funcionario_id,
-                funcionario_pessoa_id
+                dataAgenda,
+                horaAgenda,
+                paciente,
+                medico,
             });
+            console.log(consulta)
 
             // Chama a função de agendamento
             const response = await agendarConsulta(consulta);
+            console.log(response)
 
             // Envia a resposta apropriada
             return res.status(response.status).json(response);
