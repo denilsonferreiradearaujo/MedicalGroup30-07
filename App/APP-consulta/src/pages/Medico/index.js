@@ -18,7 +18,7 @@ const Medico = () => {
     useEffect(() => {
         const fetchMedicoData = async () => {
             try {
-                const medicoResponse = await api.get('/medico/1'); // Altere para o ID correto
+                const medicoResponse = await api.get(`/todosOsResultados/${medico.id}`); // Altere para o ID correto
                 setMedico(medicoResponse.data);
 
                 const consultasResponse = await api.get('/consultas/medico/1'); // Altere para o ID correto
