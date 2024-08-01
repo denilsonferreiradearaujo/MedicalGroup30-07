@@ -288,17 +288,18 @@ async function buscarPerfilPorLogin(login, senha) {
         `, [login, senha]);
 
         if (rows.length === 0) {
-            throw new Error('Login ou senha inválidos!');
+            return null; // Retorna null se não encontrar o perfil
         }
 
         return rows[0].tipo;
     } catch (error) {
-        console.log(error.message);
+        console.log('Erro ao buscar perfil:', error.message);
         return null;
     } finally {
         connection.end();
     }
 }
+
 
 async function getPacientesComConsultas() {
     const connection = await conectarBancoDeDados();
@@ -375,5 +376,29 @@ async function selecionaMedicosBd() {
         connection.end();
     }
 }
+
+async function buscarMedicoPorId(medicoId) {
+    const connection = await conectarBancoDeDados();
+    try {
+        const [rows] = await connection.query(`
+            SELECT p.cpf, p.nome, p.data_nasc, p.genero, p.email,
+                   e.logradouro, e.bairro, e.estado, e.numero, e.complemento, e.cep,
+                   GROUP_CONCAT(t.numero SEPARATOR ', ') AS telefones
+            FROM tbl_pessoa p
+            JOIN tbl_endereco e ON p.endereco_id = e.id
+            LEFT JOIN tbl_pessoa_has_tbl_telefone pt ON p.id = pt.pessoa_id
+            LEFT JOIN tbl_telefone t ON pt.telefone_id = t.id
+            WHERE p.id = ?  -- Assumindo que médico é identificado por p.id
+            GROUP BY p.cpf, p.nome, p.data_nasc, p.genero, p.email, e.logradouro, e.bairro, e.estado, e.numero, e.complemento, e.cep
+        `, [medicoId]);
+        return rows.length > 0 ? rows[0] : null;
+    } catch (error) {
+        console.log(error.message);
+        throw new Error('Erro ao buscar dados do médico.');
+    } finally {
+        connection.end();
+    }
+}
+
 
 module.exports = { selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };

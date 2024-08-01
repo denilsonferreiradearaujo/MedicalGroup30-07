@@ -110,19 +110,31 @@ const Login = ({ navigation }) => {
     const handleLogin = async () => {
         try {
             const response = await api.post('/loginMobile', { login, senha });
-            const { perfil } = response.data;
-            console.log(response);
-            if (perfil.tipo === 'paciente' || perfil.tipo === 'Paciente') {
-                navigation.navigate('Paciente');
-            } else if (perfil.tipo === 'medico' || perfil.tipo === 'Médico' || perfil.tipo === 'médico') {
-                navigation.navigate('Medico');
+            console.log('Resposta da API:', response.data);  // Log para verificar a resposta da API
+    
+            // Verificar se response.data tem a estrutura esperada
+            if (response.data && response.data.tipoPerfilNormalizado) {
+                const tipoPerfil = response.data.tipoPerfilNormalizado;
+                console.log('Tipo de Perfil:', tipoPerfil);
+    
+                if (tipoPerfil === 'paciente' || tipoPerfil === 'Paciente') {
+                    navigation.navigate('Paciente');
+                } else if (tipoPerfil === 'medico' || tipoPerfil === 'Médico' || tipoPerfil === 'médico' || tipoPerfil === 'Medico') {
+                    navigation.navigate('Medico');
+                } else {
+                    Alert.alert('Perfil desconhecido', 'Não foi possível identificar o perfil do usuário.');
+                }
             } else {
-                Alert.alert('Perfil desconhecido', 'Não foi possível identificar o perfil do usuário.');
+                // Se a resposta não contém o campo tipoPerfilNormalizado
+                console.log('Tipo de perfil não encontrado na resposta:', response.data);
+                Alert.alert('Erro', 'Resposta da API não contém o tipo de perfil esperado.');
             }
         } catch (error) {
+            console.log('Erro no login:', error);  // Log do erro para ver mais detalhes
             Alert.alert('Erro', 'Erro ao fazer login. Verifique suas credenciais e tente novamente.');
         }
     };
+    
 
     return (
         <KeyboardAvoidingView
