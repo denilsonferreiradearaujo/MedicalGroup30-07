@@ -249,21 +249,24 @@ const clienteController = {
             if (!dataAgenda || !horaAgenda || !especialidade || !medico || !paciente ) {
                 return res.status(400).json({ message: "Todos os campos são obrigatórios." });
             }
-            console.log(dataAgenda)
             const consulta = new Consulta({
                 dataAgenda,
                 horaAgenda,
                 paciente,
                 medico,
             });
-            console.log(consulta)
+            console.log("Data:", dataAgenda); // Verificação dos valores
+            console.log("Hora:", horaAgenda); // Verificação dos valores
 
             // Chama a função de agendamento
             const response = await agendarConsulta(consulta);
             console.log(response)
 
+            const pacientes = await selecionaPacientesBd();
+            const medicos = await selecionaMedicosBd();
+
             // Envia a resposta apropriada
-            return res.status(response.status).json(response);
+            return res.render('pages/agendarConsulta',{medicos, pacientes,response});
         } catch (error) {
             console.log("Erro ao agendar consulta:", error);
             return res.status(500).json({ message: "Erro ao agendar consulta." });
