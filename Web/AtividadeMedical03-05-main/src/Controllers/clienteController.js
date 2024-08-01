@@ -54,6 +54,26 @@ const clienteController = {
         return res.render('pages/todosOsResultados', { usuarioLogado: true });
     },
 
+    todosOsResultadosMobile: async (req, res) => {
+        const medicoId = req.params.medicoId;
+    
+        if (!medicoId) {
+            return res.status(400).json({ error: 'ID do médico não fornecido.' });
+        }
+    
+        try {
+            const medicoData = await buscarMedicoPorId(medicoId); // Função fictícia, substitua pelo método correto
+            if (!medicoData) {
+                return res.status(404).json({ error: 'Médico não encontrado.' });
+            }
+    
+            return res.json(medicoData);
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro ao buscar dados do médico.' });
+        }
+    },
+    
+
     detalhesPaciente: async (req, res) => {
         return res.render('pages/detalhesPaciente', { usuarioLogado: true });
     },
@@ -93,36 +113,26 @@ const clienteController = {
         }
     },
 
-    loginMobile: async (req, res) => {
+    loginMobile : async (req, res) => {
         try {
             const { login, senha } = req.body;
-
+    
             // Verifica o tipo de perfil com base no login e senha
             const tipoPerfil = await buscarPerfilPorLogin(login, senha);
-
+    
             if (!tipoPerfil) {
                 return res.json({ usuarioLogado: false, error: 'Login ou senha inválidos!' });
             }
-
+    
             // Normaliza o tipo de perfil para lowercase e remove acentos para evitar problemas de comparação
             const tipoPerfilNormalizado = removerAcentos(tipoPerfil.toLowerCase());
-            return res.json( {tipoPerfilNormalizado:tipoPerfilNormalizado, usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
-            // Redirecionar com base no tipo de perfil
-            // switch (tipoPerfilNormalizado) {
-            //     case 'paciente':
-            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
-            //     case 'medico':
-            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
-            //     case 'funcionario':
-            //         return res.json( { usuarioLogado: true }); // Exemplo de passagem de usuarioLogado
-            //     default:
-            //         throw new Error('Tipo de perfil desconhecido!');
-            // }
+            return res.json({ tipoPerfilNormalizado: tipoPerfilNormalizado, usuarioLogado: true });
         } catch (error) {
-            console.log(error);
-            return res.json( { usuarioLogado: false, error: 'Erro ao fazer login. Tente novamente.' });
+            console.log('Erro no loginMobile:', error);
+            return res.json({ usuarioLogado: false, error: 'Erro ao fazer login. Tente novamente.' });
         }
     },
+    
     adicionarCliente: async (req, res) => {
         try {
 
