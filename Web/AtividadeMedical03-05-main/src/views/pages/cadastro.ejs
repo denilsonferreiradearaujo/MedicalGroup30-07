@@ -11,21 +11,21 @@
         <div class="container">
           <div class="form-check">
             <input class="form-check-input" type="radio" name="perfil" id="cadastroMedico" value="medico"
-              onchange="toggleDadosProfissionais()" required>
+              onchange="toggleDadosMedico()" required>
             <label class="form-check-label" for="cadastroMedico">
               Médico
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="perfil" id="cadastroPaciente" value="paciente"
-              onchange="toggleDadosProfissionais()">
+              onchange="toggleDadosPaciente()">
             <label class="form-check-label" for="cadastroPaciente">
               Paciente
             </label>
           </div>
           <div class="form-check">
             <input class="form-check-input" type="radio" name="perfil" id="cadastroAdm" value="Administrador"
-              onchange="toggleDadosProfissionais()">
+              onchange="toggleDadosAdm()">
             <label class="form-check-label" for="cadastroAdm">
               Administrador
             </label>
@@ -55,15 +55,15 @@
           <!-- inserir nascimento -->
           <div class="container">
             <div class="form-floating mb-3">
-              <input type="date" placeholder min="0" class="form-control" id="floatingInput" name="data_nasc" placeholder=""
-                required />
+              <input type="date" placeholder min="0" class="form-control" id="floatingInput" name="data_nasc"
+                placeholder="" required />
               <label for="floatingInput">Inserir data nascimento</label>
             </div>
           </div>
           <!-- inserir sexo -->
           <div class="container">
             <select name="genero" class="caixa-genero">
-              <option selected>Inserir gênero</option>
+              <option disabled selected value="">Inserir gênero</option>
               <option value="mas">Masculino</option>
               <option value="fem">Feminino</option>
               <option value="outro">Outros</option>
@@ -79,37 +79,25 @@
         </legend>
         <!-- inicio dados profissionais -->
         <div class="alinhar-em-linha">
-          <!-- inserir crm-->
-          <div class="container">
-            <div class="form-floating mb-3">
-              <input type="number" min="0" class="form-control" id="floatingInput" name="crm" placeholder="" required />
-              <label for="floatingInput">Inserir CRM</label>
-            </div>
-          </div>
           <!-- inserir data admissão -->
           <div class="container">
             <div class="form-floating mb-3">
-              <input type="date" placeholder min="0" class="form-control" id="floatingInput" name="data_admissao" placeholder=""
-                required />
+              <input type="date" placeholder min="0" class="form-control" id="data_admissao" name="data_admissao"
+                placeholder="data" />
               <label for="floatingInput">Inserir data admissão</label>
             </div>
           </div>
-
-          <!-- selecione o perfil -->
-          <!-- <div class="container">
-            <select name="perfil" class="caixa-estado" required>
-              <option selected>Inserir tipo perfil</option>
-              <option value="funci">Médico</option>
-              <option value="admin">Administrador</option>
-              <option value="pacie">Paciente</option>
-            </select>
-          </div> -->
-          <!-- fim selecione o perfil -->
-
+          <!-- inserir crm-->
+          <div class="container">
+            <div class="form-floating mb-3">
+              <input type="number" min="0" class="form-control" id="crm" name="crm" placeholder="" />
+              <label for="floatingInput">Inserir CRM</label>
+            </div>
+          </div>
           <!-- selecione a especialidade -->
           <div class="container">
-            <select name="desc_especialidade" class="caixa-estado" required>
-              <option selected>Inserir especialidade</option>
+            <select name="desc_especialidade" class="caixa-estado" id="especialidade">
+              <option disabled selected value="">Inserir especialidade</option>
               <option value="pediatria">Pediatria</option>
               <option value="clinico">Clinico</option>
               <option value="oftamologo">Oftamologo</option>
@@ -151,7 +139,7 @@
           <!-- selecione o status do perfil -->
           <div class="container">
             <select name="status" class="caixa-estado" required>
-              <option selected>Status do cadastro</option>
+              <option disabled selected value="">Status do cadastro</option>
               <option value="1">Ativo</option>
               <option value="0">Inativo</option>
             </select>
@@ -197,6 +185,13 @@
       <!-- dados de endereço -->
       <fieldset class="form-group">
         <legend class="col-form-label col-sm-2 pt-0" style="font-weight: bold;">Endereço</legend>
+        <!-- inicio inserir cep -->
+        <div class="container">
+          <div class="form-floating mb-3 col-md-12">
+            <input type="number" min="0" class="form-control" id="titulo" name="cep" placeholder="" required />
+            <label for="titulo">Inserir CEP</label>
+          </div>
+        </div>
         <!-- inserir nome logradouro -->
         <div class="container">
           <div class="form-floating mb-3 col-md-12">
@@ -243,7 +238,7 @@
           <div class="container">
             <div class="form-floating mb-3 col-md-12">
               <select name="estado" class="caixa-estado">
-                <option selected>Selecione o estado</option>
+                <option disabled selected value="">Selecione o estado</option>
                 <option value="AC">Acre</option>
                 <option value="AL">Alagoas</option>
                 <option value="BA">Bahia</option>
@@ -270,13 +265,6 @@
                 <option value="SE">Sergipe</option>
                 <option value="TO">Tocantins</option>
               </select>
-            </div>
-          </div>
-          <!-- inicio inserir cep -->
-          <div class="container">
-            <div class="form-floating mb-3 col-md-12">
-              <input type="number" min="0" class="form-control" id="titulo" name="cep" placeholder="" required />
-              <label for="titulo">Inserir CEP</label>
             </div>
           </div>
         </div>
@@ -369,27 +357,66 @@
     document.getElementById('senhaInput').value = senha;
   }
 
-  function toggleDadosProfissionais() {
+  const dadosProfissionais = document.getElementById('dadosProfissionais');
+
+  function toggleDadosMedico() {
+    document.getElementById("crm").required = true;
+    document.getElementById("especialidade").required = true;
+    document.getElementById("data_admissao").required = true;
     const cadastroMedico = document.getElementById('cadastroMedico').checked;
-    const dadosProfissionais = document.getElementById('dadosProfissionais');
     dadosProfissionais.style.display = cadastroMedico ? 'block' : 'none';
+  }
+
+  function toggleDadosPaciente() {
+    document.getElementById("crm").required = false;
+    document.getElementById("especialidade").required = false;
+    document.getElementById("data_admissao").required = false;
+    document.getElementById("data_admissao").value = "";
+    const cadastroMedico = document.getElementById('cadastroMedico').checked;
+    dadosProfissionais.style.display = cadastroMedico ? 'block' : 'none';
+  }
+
+  function toggleDadosAdm() {
+    document.getElementById("crm").required = false;
+    document.getElementById("especialidade").required = false;
+    document.getElementById("data_admissao").required = true;
+    const cadastroMedico = document.getElementById('cadastroMedico').checked;
+    dadosProfissionais.style.display = cadastroMedico ? 'block' : 'none';
+  }
+
+  function buscarEndereco() {
+    const cep = document.querySelector('input[name="cep"]').value;
+    if (cep.length === 8) {
+      const url = `https://viacep.com.br/ws/${cep}/json/`;
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if (data.erro) {
+            alert('CEP não encontrado.');
+            return;
+          }
+          document.querySelector('input[name="logradouro"]').value = data.logradouro || '';
+          document.querySelector('input[name="bairro"]').value = data.bairro || '';
+          document.querySelector('input[name="cidade"]').value = data.localidade || '';
+          document.querySelector('select[name="estado"]').value = data.uf || '';
+        })
+        .catch(error => {
+          console.error('Erro ao buscar o CEP:', error);
+          alert('Erro ao buscar o CEP.');
+        });
+    }
   }
 
   document.addEventListener('DOMContentLoaded', () => {
     preencherSenha();
     toggleDadosProfissionais();
+    document.querySelector('input[name="cep"]').addEventListener('blur', buscarEndereco);
   });
-
-
-  // Script para mostrar o modal de sucesso
-  <% if (typeof success !== 'undefined' && success) { %>
-      var successModal = new bootstrap.Modal(document.getElementById('successModal'), {});
-      successModal.show();
-  <% } %>
-
 </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js" integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
+  integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
 
 </body>
 

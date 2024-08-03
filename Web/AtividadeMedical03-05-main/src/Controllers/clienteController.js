@@ -135,10 +135,9 @@ const clienteController = {
     
     adicionarCliente: async (req, res) => {
         try {
-
-            const { cpf, nome, data_nasc, genero, email, logradouro, bairro, estado, numero, complemento, cep, tel1, tel2, data_admissao, crm, login, senha, status, perfil, desc_especialidade } = req.body;
+            const { cpf, nome, data_nasc, genero, email, logradouro, bairro, estado, numero, complemento, cep, tel1, tel2, data_admissao, crm, login, senha, status, perfil, desc_especialidade, data_cad  } = req.body;
             console.log(req.body);
-            const objPessoa = new Pessoa({ cpf, nome, data_nasc, genero, email });
+            const objPessoa = new Pessoa({ cpf, nome, data_nasc, genero, email, data_cad });
             if (data_nasc === null || data_nasc === "") {
                 return res.json("Data de nascimento inválida!");
             } else {
@@ -148,10 +147,6 @@ const clienteController = {
                 }
 
             }
-
-
-
-
             console.log(logradouro, bairro, estado, numero, complemento, cep);
 
 
@@ -172,13 +167,14 @@ const clienteController = {
             const objPerfil = new Perfil({ id: null, tipo: perfil });
 
             let objEspecialidade = null;
-            // console.log(funcionario);
+            console.log("ola",data_admissao);
             var objFuncionario = new Funcionario({ id: null, data_admissao: data_admissao, crm: crm });
+            console.log(objFuncionario)
             console.log(objFuncionario.data_admissao);
-            if (objFuncionario.data_admissao === null || objFuncionario.data_admissao === "") {
+            if (objFuncionario.data_admissao === null || objFuncionario.data_admissao == "") {
                 objFuncionario = null;
             } else {
-                if (objFuncionario.data_admissao == "Invalid Date" || isNaN(Date.parse(objFuncionario.data_admissao))) {
+                if (objFuncionario.data_admissao == "Invalid Date" || !(new Date(objFuncionario.data_admissao) instanceof Date)) {
                     console.log("Erro!");
                     return res.json("Data de admissão inválida!");
                 }
