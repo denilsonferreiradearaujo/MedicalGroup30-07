@@ -404,5 +404,40 @@ async function buscarMedicoPorId(medicoId) {
     }
 }
 
+async function buscarTodasAgendas() {
+    const connection = await conectarBancoDeDados();
+    try {
+        const [rows] = await connection.query(`
+            SELECT 
+                c.status,
+                c.data,
+                c.hora,
+                e.desc_especialidade AS especialidade,
+                f_p.nome AS medico_nome,
+                p.nome AS paciente_nome
+            FROM
+                tbl_consulta c
+            JOIN
+                tbl_paciente pa ON c.paciente_id = pa.id AND c.paciente_pessoa_id = pa.pessoa_id
+            JOIN
+                tbl_pessoa p ON pa.pessoa_id = p.id
+            JOIN
+                tbl_funcionario f ON c.funcionario_id = f.id AND c.funcionario_pessoa_id = f.pessoa_id
+            JOIN
+                tbl_pessoa f_p ON f.pessoa_id = f_p.id
+            JOIN
+                tbl_funcionario_has_tbl_especialidade fe ON f.id = fe.funcionario_id AND f.pessoa_id = fe.funcionario_pessoa_id
+            JOIN
+                tbl_especialidade e ON fe.especialidade_id = e.id
+        `);
+        return rows.length > 0 ? rows : null;
+    } catch (error) {
+        console.log(error.message);
+        throw new Error('Erro ao buscar dados das consultas.');
+    } finally {
+        connection.end();
+    }
+}
 
-module.exports = { selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };
+
+module.exports = { buscarTodasAgendas, selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };

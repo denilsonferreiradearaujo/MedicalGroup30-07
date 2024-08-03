@@ -21,6 +21,7 @@
                 <th class="rotulo">Hora</th>
                 <th class="rotulo">Especialidade</th>
                 <th class="rotulo">Médico</th>
+                <th class="rotulo">Paciente</th>
             </tr>
         </thead>
         <tbody id="consultas-tbody">
@@ -41,7 +42,8 @@
                             <td>${item.data}</td>
                             <td>${item.hora}</td>
                             <td>${item.especialidade}</td>
-                            <td>${item.medico}</td>
+                            <td>${item.medico_nome}</td>
+                            <td>${item.paciente_nome}</td>
                         `;
                         tbody.appendChild(row);
                     });

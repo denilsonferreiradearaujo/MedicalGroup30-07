@@ -7,7 +7,7 @@ const Controller = require("../Controllers/clienteController");
 // Rotas GET
 router.get('/', Controller.index);
 router.get('/adm', Controller.adm); // Rota de exemplo que usa login
-router.get('/listar', Controller.listar); // Rota de exemplo que usa login
+router.get('/listarAgendas', Controller.listarAgendas); // Rota de exemplo que usa login
 router.get('/cadastro', Controller.adicionarCliente); // Rota de exemplo que usa login
 router.get('/clientes', Controller.todosOsResultados);
 router.get('/cliente/:cpf', Controller.exibirCliente);
