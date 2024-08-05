@@ -1,185 +1,233 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Todos os registros</title>
+    <title>Todos os Registros</title>
     <style>
       body {
-        background-color: #ffffff; /* Cor de fundo padrão */
-        transition: background-color 0.5s; /* Transição suave da cor de fundo */
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
       }
-      /* estilos header */
-      header {
-        padding: 10px;
-        margin-top: 20px;
-        background-color: #f5f5f5;
+      .title {
+        text-align: center;
+        padding: 20px;
+        color: rgb(0, 0, 0);
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .Pes {
+        background-color: #ffffff;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        margin: 20px auto;
+        max-width: 1200px;
       }
       .container {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .lado_esquerdo, .lado_direito {
+        display: flex;
         align-items: center;
       }
-      /* estilos main */
-      main {
-        max-height: 600px; /* altura máxima do contêiner */
-        overflow-y: auto; /* adiciona a barra de rolagem vertical */
+      label {
+        margin-right: 10px;
+        font-weight: bold;
+        color: #333;
+      }
+      input[type="search"], input[type="week"] {
         border: 1px solid #ccc;
-        padding: 10px;
+        border-radius: 4px;
+        padding: 8px;
+        font-size: 16px;
+        outline: none;
+        width: 200px;
+        margin-right: 10px;
+      }
+      input[type="search"]:focus, input[type="week"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+      }
+      main {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       .container_linha {
         display: flex;
-        justify-content: space-around;
+        justify-content: space-between;
         align-items: center;
-        background-color: #f5f5f5;
-        padding: 10px;
-        margin-top: 20px;
+        background-color: #f9f9f9;
+        padding: 15px;
         margin-bottom: 10px;
-        border: 1px solid #ccc;
-        width: 90%;
-        height: 40px;
-        margin-left: 5%;
+        border-radius: 4px;
+        border: 1px solid #ddd;
+        transition: background-color 0.3s;
+      }
+      .container_linha:hover {
+        background-color: #e9ecef;
       }
       .dados_linha {
         display: flex;
-        justify-content: space-around;
-        align-items: center;
-        width: 100%;
-        padding: 10px;
-        margin-top: 20px;
+        flex-direction: column;
+        width: 80%;
       }
-      .botao_detalhes {
-        background-color: rgb(33, 227, 240);
+      .dados_linha p {
+        margin: 5px 0;
+        font-size: 16px;
+        color: #333;
+      }
+      .botao_detalhes, .botao_prontuario {
+        background-color: #007bff;
         color: white;
-        padding: 10px 20px;
+        padding: 10px 15px;
         border: none;
         border-radius: 25px;
         cursor: pointer;
+        font-size: 14px;
+        text-align: center;
+        text-decoration: none;
+        transition: background-color 0.3s;
+      }
+      .botao_detalhes:hover, .botao_prontuario:hover {
+        background-color: #0056b3;
       }
       .botao_prontuario {
-        background-color: #2196f3;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 25px;
-        cursor: pointer;
-        width: 200px;
+        background-color: #28a745;
+        margin-left: 10px;
       }
-
-      /* Modal styles */
+      .botao_prontuario:hover {
+        background-color: #218838;
+      }
       .modal {
         display: none; /* Hidden by default */
         position: fixed;
-        z-index: 1; /* Sit on top */
+        z-index: 1000; /* Sit on top */
         left: 0;
         top: 0;
         width: 100%;
         height: 100%;
         overflow: auto; /* Enable scroll if needed */
-        background-color: rgb(0, 0, 0); /* Fallback color */
-        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+        background-color: rgba(0, 0, 0, 0.5); /* Black w/ opacity */
+        backdrop-filter: blur(5px); /* Blur background */
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
       .modal-content {
-        background-color: #fefefe;
-        margin: 2% auto; /* 5% from the top and centered */
+        background-color: #fff;
         padding: 0;
-        border: none;
-        width: 90%;
-        height: 90%; /* 90% of the viewport height */
+        border-radius: 8px;
+        width: 80%;
+        height: 80%; /* 80% of the viewport height */
         position: relative;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Sombra para profundidade */
       }
       .close {
-        color: white;
+        color: #333;
         position: absolute;
         top: 10px;
-        right: 25px;
+        right: 15px;
         font-size: 35px;
         font-weight: bold;
-      }
-      .close:hover,
-      .close:focus {
-        color: #999;
-        text-decoration: none;
         cursor: pointer;
+      }
+      .close:hover {
+        color: #007bff;
       }
       iframe {
         width: 100%;
-        height: calc(100% - 40px); /* Adjust to fit within the modal */
+        height: calc(100% - 50px); /* Ajustar para caber dentro do modal */
         border: none;
+        border-radius: 0 0 8px 8px; /* Cantos arredondados inferiores */
       }
     </style>
-  </head>
-  <body>
-    <!-- inicio da header -->
-    <header>
-      <div class="container">
-        <div class="lado_esquerdo">
-          <label class="" id="">Pesque o nome do paciente</label>
-          <input type="search" id="search" placeholder="Pesquisar" />
-          <span class="search"></span>
-        </div>
-        <div class="lado_direito">
-          <label class="" id="">pesquise no periodo</label>
-          <input type="week" id="search" placeholder="Pesquisar" />
-          <span class="search"></span>
-        </div>
-      </div>
-    </header>
-    <!-- fim da header -->
-    <!-- inicio da main -->
-    <main>
-      <!-- exibição das informações -->
-      <div class="container_linha">
-        <div id="botao_detalhes">
-          <button
-            class="botao_detalhes"
-            src="./pag_erro.ejs"
-          >
-            Detalhes
-          </button>
-        </div>
-        <div class="dados_linha">
-          <p>Nome paciente</p>
-          <p>Especialidade</p>
-          <p>Nome do medico</p>
-          <p>Data da consulta</p>
-        </div>
-        <div id="botao_prontuario">
-          <button
-            class="botao_prontuario"
-            onclick="openModal();"
-          >
-            Ultimo prontuario
-          </button>
-        </div>
-      </div>
-      <!-- fim da exibição das informações -->
-    </main>
-    <!-- fim da main -->
+</head>
+<body>
+  <div class="title">
+    Consultas Médicas
+  </div>
 
-    <!-- The Modal -->
-    <div id="myModal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <iframe src="prontuario.html"></iframe>
+  <div class="Pes">
+    <div class="container">
+      <div class="lado_esquerdo">
+        <label for="search">Pesquise o nome do paciente:</label>
+        <input type="search" id="search" placeholder="Pesquisar" oninput="filterRecords()" />
+      </div>
+      <div class="lado_direito">
+        <label for="search_week">Pesquise no período:</label>
+        <input type="week" id="search_week" placeholder="Pesquisar" />
       </div>
     </div>
+  </div>
 
-    <script>
-      function openModal() {
-        document.getElementById("myModal").style.display = "block";
+  <main id="recordsContainer">
+    <% if (consultas && consultas.length > 0) { %>
+      <% consultas.forEach(function(consulta) { %>
+        <div class="container_linha" data-paciente="<%= consulta.paciente_nome %>">
+          <div class="dados_linha">
+            <p><strong>Paciente:</strong> <%= consulta.paciente_nome %></p>
+            <p><strong>Especialidade:</strong> <%= consulta.especialidade %></p>
+            <p><strong>Médico:</strong> <%= consulta.medico_nome %></p>
+            <p><strong>Data:</strong> <%= consulta.data %></p>
+          </div>
+          <div>
+            <button class="botao_prontuario" onclick="openModal('<%= consulta.prontuario_url %>')">
+              Último prontuário
+            </button>
+          </div>
+        </div>
+      <% }); %>
+    <% } else { %>
+      <p style="text-align: center; color: #888;">Nenhum registro encontrado.</p>
+    <% } %>
+  </main>
+
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <iframe id="modalIframe" src=""></iframe>
+    </div>
+  </div>
+
+  <script>
+    function openModal(url) {
+      document.getElementById("modalIframe").src = url;
+      document.getElementById("myModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("myModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      if (event.target == document.getElementById("myModal")) {
+        closeModal();
       }
+    }
 
-      function closeModal() {
-        document.getElementById("myModal").style.display = "none";
-      }
-
-      // Close the modal when clicking outside of the modal content
-      window.onclick = function(event) {
-        if (event.target == document.getElementById("myModal")) {
-          closeModal();
+    function filterRecords() {
+      const searchInput = document.getElementById("search").value.toLowerCase();
+      const records = document.querySelectorAll(".container_linha");
+      
+      records.forEach(record => {
+        const pacienteName = record.getAttribute("data-paciente").toLowerCase();
+        if (pacienteName.includes(searchInput)) {
+          record.style.display = "";
+        } else {
+          record.style.display = "none";
         }
-      }
-    </script>
-  </body>
+      });
+    }
+  </script>
+</body>
 </html>

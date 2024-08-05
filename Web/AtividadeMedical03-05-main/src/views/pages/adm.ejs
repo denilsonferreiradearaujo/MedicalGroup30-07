@@ -6,30 +6,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aba Lateral</title>
     <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+        }
+
         .sidebar {
-            height: 72vh;
+            height: 100vh;
             width: 250px;
-            background-color: white;
-            padding-top: 0;
+            background: linear-gradient(to bottom, #007bff, #0056b3);
+            color: white;
+            padding-top: 50px;
             position: fixed;
-            left: -1px;
-            margin-top: 100px;
+            top: 50px;
+            left: 0;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease;
         }
 
         .sidebar a {
-            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 16px;
             color: white;
-            display: block;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, padding-left 0.3s ease;
         }
 
         .sidebar a:hover {
-            background-color: #0475c0;
+            background-color: #0056b3;
+            padding-left: 30px;
         }
 
+        .sidebar a i {
+            margin-right: 30px;
+        }
 
-        .container.body {
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -37,37 +58,52 @@
         }
 
         .imagem {
-            display: flex;
-            position: relative;
-            width: 29rem;
-            height: 30rem;
-            left: 60rem;
-            top: 1rem;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+
+            .content {
+                margin-left: 200px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: static;
+                box-shadow: none;
+            }
+
+            .content {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="sidebar">
-            <a href="/listarAgendas" style="color: black;">Consultas</a>
-            <a href="/cadastro" style="color: black;">Cadastrar</a>
-            <a href="/agendarConsulta" style="color: black;">Agendar</a>
-            <a href="/todosOsResultados" style="color: black;">Consultas Médico</a>
-            <a href="/detalhesPaciente" style="color: black;">Detalhes Prontuário</a>
-            <a href="/" style="color: black;">Sair</a>
-        </div>
+    <div class="sidebar">
+        <a href="/listarAgendas"><i class="fa fa-calendar" aria-hidden="true"></i> Consultas</a>
+        <a href="/cadastro"><i class="fa fa-user-plus" aria-hidden="true"></i> Cadastrar</a>
+        <a href="/agendarConsulta"><i class="fa fa-calendar-check" aria-hidden="true"></i> Agendar</a>
+        <a href="/todosOsResultados"><i class="fa fa-file-medical" aria-hidden="true"></i> Consultas Médico</a>
+        <a href="/detalhesPaciente"><i class="fa fa-file-alt" aria-hidden="true"></i> Detalhes Prontuário</a>
+        <a href="/"><i class="fa fa-sign-out-alt" aria-hidden="true"></i> Sair</a>
+    </div>
 
-        <div class="content">
-            <div class="container.body">
-                <img class="imagem"
-                    src="../../../images/Imagem_pag-adm.png">
-            </div>
-        </div>
+    <div class="content">
+        <img class="imagem" src="../../../images/Imagem_pag-adm.png" alt="Imagem de Administração">
     </div>
 
 </body>
 
 </html>
-

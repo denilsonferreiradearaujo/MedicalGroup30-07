@@ -14,7 +14,7 @@ const Validacoes = require('../models/classes/Validacoes');
 const selecionaPacientes = require('../models/classes/selecionaPacientes')
 
 // Import das funções das ClienteModel
-const { buscarTodasAgendas,insert, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas, selecionaPacientesBd, selecionaMedicosBd } = require('../models/query/ClienteModel');
+const { buscarTodasAgendas,insert, remove, agendarConsulta, buscarPerfilPorLogin, selecionaPacientesBd, selecionaMedicosBd} = require('../models/query/ClienteModel');
 
 function removerAcentos(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -279,29 +279,46 @@ const clienteController = {
         }
     },
 
-    listarPacientesComConsultas: async (req, res) => {
+    listarDetalhesPaciente: async (req, res) => {
         try {
-            const consultas = await getPacientesComConsultas();
-            // Certifique-se de que o nome da variável "consultas" está correto aqui.
-            res.render('pages/listar', { consultas });
+          const pacienteId = req.params.id; // Obtém o ID do paciente da URL
+          
+          // Funções para buscar dados específicos
+          const paciente = await buscarPacientePorId(pacienteId);
+          const consultas = await buscarConsultasDoPaciente(pacienteId);
+          const prontuario = await buscarProntuarioMaisRecente(pacienteId);
+          
+          // Renderiza a página com os dados obtidos
+          res.render('pages/detalhesPaciente', { paciente, consultas, prontuario });
         } catch (error) {
-            console.error("Erro ao listar pacientes com consultas:", error.message);
-            res.status(500).send("Erro ao listar pacientes com consultas.");
+          console.error('Erro ao carregar detalhes do paciente:', error);
+          res.status(500).send('Erro ao carregar os detalhes.');
         }
-    },
+      },
 
     listarAgendas: async (req, res) => {
         try {
             const consultas = await buscarTodasAgendas();
             // Certifique-se de que o nome da variável "consultas" está correto aqui.
             res.render('pages/listarAgendas', { consultas });
+            
             console.log(consultas)
         } catch (error) {
             console.error("Erro ao listar consultas:", error.message);
             res.status(500).send("Erro ao listar consultas.");
         }
     },
-};
+
+    todosOsResultados: async (req, res) => {
+        try {
+            const consultas = await buscarTodasAgendas();
+            res.render('pages/todosOsResultados', { consultas });
+        } catch (error) {
+            console.error("Erro ao buscar resultados:", error.message);
+            res.status(500).send("Erro ao buscar resultados.");
+        }
+    },
+}
 
 
 module.exports = clienteController;
