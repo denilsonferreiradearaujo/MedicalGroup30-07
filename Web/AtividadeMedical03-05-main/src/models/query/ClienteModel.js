@@ -305,32 +305,41 @@ async function buscarPerfilPorLogin(login, senha) {
 }
 
 
-async function getPacientesComConsultas() {
+async function getDetalhesPaciente(pacienteId) {
     const connection = await conectarBancoDeDados();
     try {
         const [rows] = await connection.query(`
             SELECT
-                c.status,
-                c.data,
-                c.hora,
-                e.desc_especialidade AS especialidade,
-                p.nome AS medico
-            FROM
-                tbl_consulta c
-            JOIN
-                tbl_funcionario f ON c.funcionario_id = f.id
-            JOIN
-                tbl_pessoa p ON f.pessoa_id = p.id
-            JOIN
-                tbl_funcionario_has_tbl_especialidade fe ON f.id = fe.funcionario_id
-            JOIN
-                tbl_especialidade e ON fe.especialidade_id = e.id
-            ORDER BY
-                c.data, c.hora;
-        `);
+                p.nome AS paciente_nome,
+                p.data_nasc AS paciente_data_nasc,
+                p.genero AS paciente_genero,
+                p.email AS paciente_email,
+                e.logradouro AS endereco_logradouro,
+                e.bairro AS endereco_bairro,
+                e.estado AS endereco_estado,
+                e.numero AS endereco_numero,
+                e.complemento AS endereco_complemento,
+                e.cep AS endereco_cep,
+                t.numero AS telefone_numero,
+                c.data AS consulta_data,
+                c.hora AS consulta_hora,
+                f.nome AS medico_nome,
+                es.desc_especialidade AS especialidade
+            FROM tbl_paciente pac
+            JOIN tbl_pessoa p ON pac.pessoa_id = p.id
+            JOIN tbl_endereco e ON p.endereco_id = e.id
+            LEFT JOIN tbl_pessoa_has_tbl_telefone pt ON p.id = pt.pessoa_id
+            LEFT JOIN tbl_telefone t ON pt.telefone_id = t.id
+            LEFT JOIN tbl_consulta c ON pac.id = c.paciente_id AND pac.pessoa_id = c.paciente_pessoa_id
+            LEFT JOIN tbl_funcionario f ON c.funcionario_id = f.id AND c.funcionario_pessoa_id = f.pessoa_id
+            LEFT JOIN tbl_funcionario_has_tbl_especialidade fe ON f.id = fe.funcionario_id
+            LEFT JOIN tbl_especialidade es ON fe.especialidade_id = es.id
+            WHERE pac.id = ?;
+        `, [pacienteId]);
+
         return rows;
     } catch (error) {
-        console.error("Erro ao buscar pacientes com consultas:", error.message);
+        console.error("Erro ao buscar detalhes do paciente:", error.message);
         return [];
     } finally {
         connection.end();
@@ -437,7 +446,15 @@ async function buscarTodasAgendas() {
     } finally {
         connection.end();
     }
+
+
+
 }
 
 
-module.exports = { buscarTodasAgendas, selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getPacientesComConsultas };
+
+
+
+
+
+module.exports = {  buscarMedicoPorId ,buscarTodasAgendas, selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getDetalhesPaciente };

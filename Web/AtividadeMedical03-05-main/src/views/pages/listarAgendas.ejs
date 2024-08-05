@@ -13,7 +13,7 @@
 
      <h3 class="titulo-consulta">Consultas Agendadas</h3>
 
-    <table class="tableConsulta table-hover">
+     <table class="tableConsulta table-hover">
         <thead class="table-consulta">
             <tr>
                 <th class="rotulo">Status</th>
@@ -25,32 +25,24 @@
             </tr>
         </thead>
         <tbody id="consultas-tbody">
+            <% if (consultas && consultas.length > 0) { %>
+                <% consultas.forEach(function(consulta) { %>
+                    <tr>
+                        <td><%= consulta.status %></td>
+                        <td><%= consulta.data %></td>
+                        <td><%= consulta.hora %></td>
+                        <td><%= consulta.especialidade %></td>
+                        <td><%= consulta.medico_nome %></td>
+                        <td><%= consulta.paciente_nome %></td>
+                    </tr>
+                <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="6">Nenhuma consulta encontrada.</td>
+                </tr>
+            <% } %>
         </tbody>
     </table>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetch('pages/listar')  
-                .then(response => response.json())
-                .then(consultas => {
-                    const tbody = document.getElementById('consultas-tbody');
-                    consultas.forEach(item => {
-                        const row = document.createElement('tr');
-
-                        row.innerHTML = `
-                            <td>${item.status}</td>
-                            <td>${item.data}</td>
-                            <td>${item.hora}</td>
-                            <td>${item.especialidade}</td>
-                            <td>${item.medico_nome}</td>
-                            <td>${item.paciente_nome}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-                })
-                .catch(error => console.error('Erro ao buscar consultas:', error));
-        });
-    </script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
