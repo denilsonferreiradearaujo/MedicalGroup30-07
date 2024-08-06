@@ -26,6 +26,7 @@ router.delete('/cliente/:cpf', Controller.deletarCliente);
 router.get('/todosOsResultados', Controller.todosOsResultados);
 router.get('/todosOsResultadosMobile', Controller.todosOsResultadosMobile);
 router.get('/detalhesPaciente', Controller.detalhesPaciente);
+
 // router.get("/todosOsResultados'", (req, res) => {
 //     res.render('pages/todosOsResultados', { usuarioLogado: true });
 // });
