@@ -24,9 +24,6 @@ class Funcionario {
     get Pessoa_endereco_id() { return this.pessoa_endereco_id; }
 
     DataConvert(value) {
-        // if (value === null || typeof value !== 'string') {
-        //     return null; // ou lançar um erro, dependendo do comportamento desejado
-        // }
         let [dia, mes, ano] = value.split('/');
         let dataFormatada = `${ano}-${mes}-${dia}`;
         this.data_admissao = new Date(dataFormatada);

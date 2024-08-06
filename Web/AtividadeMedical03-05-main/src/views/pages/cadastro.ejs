@@ -23,13 +23,7 @@
               Paciente
             </label>
           </div>
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="perfil" id="cadastroAdm" value="Administrador"
-              onchange="toggleDadosAdm()">
-            <label class="form-check-label" for="cadastroAdm">
-              Administrador
-            </label>
-          </div>
+
         </div>
       </fieldset>
 
@@ -188,7 +182,8 @@
         <!-- inicio inserir cep -->
         <div class="container">
           <div class="form-floating mb-3 col-md-12">
-            <input type="number" min="0" class="form-control" id="titulo" name="cep" placeholder="" required />
+            <input type="number" min="0" class="form-control" id="titulo" name="cep" placeholder=""
+              onblur="buscarEndereco()" required />
             <label for="titulo">Inserir CEP</label>
           </div>
         </div>
@@ -199,13 +194,7 @@
             <label for="titulo">Inserir logradouro</label>
           </div>
         </div>
-        <!-- inserir complemento -->
-        <div class="container">
-          <div class="form-floating mb-3 col-md-12">
-            <input type="text" class="form-control" id="titulo" name="complemento" placeholder="" />
-            <label for="titulo">Inserir complemento</label>
-          </div>
-        </div>
+
 
         <!-- alinha-horizontal -->
         <div class="alinhar-em-linha">
@@ -226,14 +215,6 @@
           </div>
         </div>
         <div class="alinhar-em-linha">
-          <!-- inserir numero da casa -->
-          <div class="container">
-            <div class="form-floating mb-3 col-md-12">
-              <input type="text" class="form-control" id="titulo" name="numero" placeholder="" required />
-              <label for="titulo">Inserir número residência</label>
-            </div>
-          </div>
-
           <!-- inicio inserir estado -->
           <div class="container">
             <div class="form-floating mb-3 col-md-12">
@@ -265,6 +246,20 @@
                 <option value="SE">Sergipe</option>
                 <option value="TO">Tocantins</option>
               </select>
+            </div>
+          </div>
+          <!-- inserir complemento -->
+          <div class="container">
+            <div class="form-floating mb-3 col-md-12">
+              <input type="text" class="form-control" id="titulo" name="complemento" placeholder="" />
+              <label for="titulo">Inserir complemento</label>
+            </div>
+          </div>
+          <!-- inserir numero da casa -->
+          <div class="container">
+            <div class="form-floating mb-3 col-md-12">
+              <input type="text" class="form-control" id="titulo" name="numero" placeholder="" required />
+              <label for="titulo">Inserir número residência</label>
             </div>
           </div>
         </div>
@@ -299,19 +294,19 @@
 </div>
 
 
-<!-- Modal de Sucesso -->
+<!-- Modal -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="successModalLabel">Sucesso</h5>
+        <h5 class="modal-title" id="successModalLabel">Cadastro realizado com sucesso!</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Cadastro realizado com sucesso!
+        Seu cadastro foi realizado com sucesso. Você pode agora fazer login para acessar seu perfil.
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
       </div>
     </div>
   </div>
@@ -376,14 +371,6 @@
     dadosProfissionais.style.display = cadastroMedico ? 'block' : 'none';
   }
 
-  function toggleDadosAdm() {
-    document.getElementById("crm").required = false;
-    document.getElementById("especialidade").required = false;
-    document.getElementById("data_admissao").required = true;
-    const cadastroMedico = document.getElementById('cadastroMedico').checked;
-    dadosProfissionais.style.display = cadastroMedico ? 'block' : 'none';
-  }
-
   function buscarEndereco() {
     const cep = document.querySelector('input[name="cep"]').value;
     if (cep.length === 8) {
@@ -412,12 +399,19 @@
     toggleDadosProfissionais();
     document.querySelector('input[name="cep"]').addEventListener('blur', buscarEndereco);
   });
+
+  function showSuccessModal(event) {
+      event.preventDefault(); // Evita o envio do formulário para exibir o modal
+      var myModal = new bootstrap.Modal(document.getElementById('successModal'), {
+        keyboard: false
+      });
+      myModal.show();
+    }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
   integrity="sha512-ykZ1QQr0Jy/4ZkvKuqWn4iF3lqPZyij9iRv6sGqLRdTPkY69YX6+7wvVGmsdBbiIfN/8OdsI7HABjvEok6ZopQ=="
   crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
-
 </body>
 
 </html>
