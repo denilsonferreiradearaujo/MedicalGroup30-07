@@ -13,6 +13,7 @@ const Telefone = require('../models/classes/Telefone');
 const Validacoes = require('../models/classes/Validacoes');
 const selecionaPacientes = require('../models/classes/selecionaPacientes')
 
+
 // Import das funções das ClienteModel
 const { buscarTodasAgendas,insert, remove, agendarConsulta, buscarPerfilPorLogin, selecionaPacientesBd, selecionaMedicosBd} = require('../models/query/ClienteModel');
 
@@ -299,7 +300,18 @@ const clienteController = {
     listarAgendas: async (req, res) => {
         try {
             const consultas = await buscarTodasAgendas();
-            // Certifique-se de que o nome da variável "consultas" está correto aqui.
+            function formatarData(data) {
+                const date = new Date(data);
+                const dia = String(date.getDate()).padStart(2, '0');
+                const mes = String(date.getMonth() + 1).padStart(2, '0');
+                const ano = date.getFullYear();
+                return `${dia}/${mes}/${ano}`;
+            };
+
+            consultas.forEach(consulta => {
+                consulta.data = formatarData(consulta.data);
+            });
+
             res.render('pages/listarAgendas', { consultas });
             
             console.log(consultas)
@@ -312,6 +324,20 @@ const clienteController = {
     todosOsResultados: async (req, res) => {
         try {
             const consultas = await buscarTodasAgendas();
+
+            function formatarData(data) {
+                const date = new Date(data);
+                const dia = String(date.getDate()).padStart(2, '0');
+                const mes = String(date.getMonth() + 1).padStart(2, '0');
+                const ano = date.getFullYear();
+                return `${dia}/${mes}/${ano}`;
+            };
+
+            consultas.forEach(consulta => {
+                consulta.data = formatarData(consulta.data);
+            });
+
+
             res.render('pages/todosOsResultados', { consultas });
         } catch (error) {
             console.error("Erro ao buscar resultados:", error.message);

@@ -10,7 +10,6 @@
             margin: 0;
             font-family: 'Arial', sans-serif;
             background-color: #f4f7f9;
-            color: #333;
             display: flex;
         }
 
@@ -47,22 +46,16 @@
             margin-right: 30px;
         }
 
-        .content {
+         .content {
             margin-left: 250px;
             padding: 20px;
-            flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            
+            opacity: 60%;
         }
 
-        .imagem {
-            width: 80%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
 
         @media (max-width: 768px) {
             .sidebar {
@@ -82,9 +75,6 @@
                 box-shadow: none;
             }
 
-            .content {
-                margin-left: 0;
-            }
         }
     </style>
 </head>
@@ -101,7 +91,7 @@
     </div>
 
     <div class="content">
-        <img class="imagem" src="../../../images/Imagem_pag-adm.png" alt="Imagem de Administração">
+        <img src="../../../images/Imagem_pag-adm.png" alt="Imagem de Administração">
     </div>
 
 </body>
