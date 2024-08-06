@@ -14,8 +14,9 @@ const Validacoes = require('../models/classes/Validacoes');
 const selecionaPacientes = require('../models/classes/selecionaPacientes')
 
 
+
 // Import das funções das ClienteModel
-const { buscarTodasAgendas,insert, remove, agendarConsulta, buscarPerfilPorLogin, selecionaPacientesBd, selecionaMedicosBd} = require('../models/query/ClienteModel');
+const { deletarUsuario, buscarTodasPessoas ,buscarTodasAgendas,insert, remove, agendarConsulta, buscarPerfilPorLogin, selecionaPacientesBd, selecionaMedicosBd} = require('../models/query/ClienteModel');
 
 function removerAcentos(str) {
     return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -321,6 +322,34 @@ const clienteController = {
         }
     },
 
+   listarpessoas: async (req, res) => {
+        try {
+            const pessoas = await buscarTodasPessoas();
+            
+            res.render('pages/pessoa', { pessoas });
+            } catch (error) {
+                console.error("Erro ao buscar pessoas:", error.message);
+                res.status(500).send("Erro ao buscar pessoas.");
+                }
+    
+    },
+
+
+    deletarUsuario: async (req, res) => {
+        const { userId, enderecoId } = req.body;
+    
+        if (!userId || !enderecoId) {
+            return res.status(400).json({ error: 'ID do usuário e ID do endereço são necessários.' });
+        }
+    
+        try {
+            await deletarUsuario(userId, enderecoId);
+            res.status(200).json({ message: `Usuário ${userId} deletado com sucesso.` });
+        } catch (error) {
+            res.status(500).json({ error: 'Erro ao deletar usuário.' });
+        }
+    },
+
     todosOsResultados: async (req, res) => {
         try {
             const consultas = await buscarTodasAgendas();
@@ -339,6 +368,7 @@ const clienteController = {
 
 
             res.render('pages/todosOsResultados', { consultas });
+            
         } catch (error) {
             console.error("Erro ao buscar resultados:", error.message);
             res.status(500).send("Erro ao buscar resultados.");

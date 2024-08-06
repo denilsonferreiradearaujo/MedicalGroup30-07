@@ -1,24 +1,83 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Pessoas</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .btn-custom, .btn-delete {
+            border: none;
+            border-radius: 4px;
+        }
+
+        .btn-custom {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        h3 {
+            color: #007bff;
+            margin-bottom: 20px;
+            text-align: center; /* Centraliza o título */
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+        }
+
+        .modal-header, .modal-footer {
+            border-bottom: 1px solid #dee2e6;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+    </style>
 </head>
 
 <body>
-
-    <div class="container mt-5">
-        <h3 class="mb-4">Lista de Pessoas</h3>
+    <h3>Pessoas Cadastradas</h3>
+    <div class="container">
+        
         <table class="table table-hover">
-            <thead class="thead-dark">
+            <thead class="thead-light">
                 <tr>
                     <th>ID</th>
                     <th>Nome</th>
                     <th>Email</th>
                     <th>Categoria</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -29,20 +88,107 @@
                             <td><%= pessoa.nome %></td>
                             <td><%= pessoa.email %></td>
                             <td><%= pessoa.categoria %></td>
+                            <td>
+                                <button class="btn btn-custom btn-sm" data-toggle="modal" data-target="#editModal" data-id="<%= pessoa.id %>" data-nome="<%= pessoa.nome %>" data-email="<%= pessoa.email %>">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-delete btn-sm" data-toggle="modal" data-target="#deleteModal" data-id="<%= pessoa.id %>" data-endereco-id="<%= pessoa.endereco_id %>">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                     <% }); %>
                 <% } else { %>
                     <tr>
-                        <td colspan="4">Nenhuma pessoa encontrada.</td>
+                        <td colspan="5" class="text-center">Nenhuma pessoa encontrada.</td>
                     </tr>
                 <% } %>
             </tbody>
         </table>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/editar" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Editar Pessoa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="edit-id">
+                        <div class="form-group">
+                            <label for="edit-nome">Nome</label>
+                            <input type="text" class="form-control" id="edit-nome" name="nome" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-email">Email</label>
+                            <input type="email" class="form-control" id="edit-email" name="email" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-custom">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="/pessoa" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Deletar Pessoa</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="delete-id">
+                        <input type="hidden" name="endereco_id" id="delete-endereco-id">
+                        <p>Tem certeza de que deseja deletar esta pessoa?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-delete">Deletar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $('#editModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var nome = button.data('nome');
+            var email = button.data('email');
+
+            var modal = $(this);
+            modal.find('#edit-id').val(id);
+            modal.find('#edit-nome').val(nome);
+            modal.find('#edit-email').val(email);
+        });
+
+        $('#deleteModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var id = button.data('id');
+            var enderecoId = button.data('endereco-id');
+
+            var modal = $(this);
+            modal.find('#delete-id').val(id);
+            modal.find('#delete-endereco-id').val(enderecoId);
+        });
+    </script>
 </body>
 
 </html>

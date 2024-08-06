@@ -16,16 +16,18 @@ router.get('/agendarConsulta', Controller.agendar); // Rota de exemplo que usa l
 // Rotas POST
 router.post('/cadastro', Controller.adicionarCliente);
 router.post('/agendarConsulta', Controller.agendarConsulta);
-router.post('/login', Controller.login); // Rota para o processo de login
+router.post('/login', Controller.login);// Rota para o processo de login
+
 router.post('/loginMobile', Controller.loginMobile); // Rota para o processo de logout
 
 // Rotas PUT e DELETE
 router.put('/cliente/:cpf', Controller.atualizarCliente);
-router.delete('/cliente/:cpf', Controller.deletarCliente);
+router.delete('/pessoa', Controller.deletarUsuario);
 
 router.get('/todosOsResultados', Controller.todosOsResultados);
 router.get('/todosOsResultadosMobile', Controller.todosOsResultadosMobile);
 router.get('/detalhesPaciente', Controller.detalhesPaciente);
+router.get('/pessoa', Controller.listarpessoas);
 
 // router.get("/todosOsResultados'", (req, res) => {
 //     res.render('pages/todosOsResultados', { usuarioLogado: true });
