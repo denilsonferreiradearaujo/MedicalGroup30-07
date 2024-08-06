@@ -452,6 +452,84 @@ async function buscarTodasAgendas() {
 
 
 
+async function deletarUsuario(userId, enderecoId) {
+    const connection = await conectarBancoDeDados();
+  
+    try {
+      // Iniciar transação
+      await connection.beginTransaction();
+  
+      // Deletar da tbl_login
+      await connection.query('DELETE FROM tbl_login WHERE pessoa_id = ? AND pessoa_endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_perfis
+      await connection.query('DELETE FROM tbl_perfis WHERE login_pessoa_id = ? AND login_pessoa_endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_funcionario_has_tbl_especialidade
+      await connection.query('DELETE FROM tbl_funcionario_has_tbl_especialidade WHERE funcionario_pessoa_id = ? AND funcionario_pessoa_endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_funcionario
+      await connection.query('DELETE FROM tbl_funcionario WHERE pessoa_id = ? AND pessoa_endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_pessoa_has_tbl_telefone
+      await connection.query('DELETE FROM tbl_pessoa_has_tbl_telefone WHERE pessoa_id = ? AND pessoa_tbl_endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_paciente
+      await connection.query('DELETE FROM tbl_paciente WHERE pessoa_id = ?', [userId]);
+  
+      // Deletar da tbl_consulta
+      await connection.query('DELETE FROM tbl_consulta WHERE paciente_pessoa_id = ? OR funcionario_pessoa_id = ?', [userId, userId]);
+  
+      // Deletar da tbl_prontuario
+      await connection.query('DELETE FROM tbl_prontuario WHERE consulta_paciente_pessoa_id = ? OR consulta_funcionario_pessoa_id = ?', [userId, userId]);
+  
+      // Deletar da tbl_pessoa
+      await connection.query('DELETE FROM tbl_pessoa WHERE id = ? AND endereco_id = ?', [userId, enderecoId]);
+  
+      // Deletar da tbl_endereco (opcional, se não houver outros vínculos)
+      await connection.query('DELETE FROM tbl_endereco WHERE id = ?', [enderecoId]);
+  
+      // Commit da transação
+      await connection.commit();
+  
+      console.log(`Usuário ${userId} e suas relações deletadas com sucesso.`);
+    } catch (error) {
+      // Em caso de erro, rollback da transação
+      await connection.rollback();
+      console.error(`Erro ao deletar o usuário ${userId}:`, error);
+    } finally {
+      // Fechar conexão
+      await connection.end();
+    }
+  }
+
+
+
+    async function buscarTodasPessoas() {
+        const connection = await conectarBancoDeDados();
+        try {
+            const [rows] = await connection.query(`
+                SELECT 
+                    p.id,
+                    p.nome,
+                    p.email,
+                    CASE 
+                        WHEN pa.id IS NOT NULL THEN 'Paciente'
+                        WHEN f.id IS NOT NULL THEN 'Funcionario'
+                        ELSE 'Outro'
+                    END AS categoria
+                FROM tbl_pessoa p
+                LEFT JOIN tbl_paciente pa ON p.id = pa.pessoa_id
+                LEFT JOIN tbl_funcionario f ON p.id = f.pessoa_id;
+            `);
+            return rows;
+        } catch (error) {
+            console.error("Erro ao buscar pessoas:", error.message);
+            throw new Error("Erro ao buscar pessoas.");
+        } finally {
+            connection.end();
+        }
+    }
 
 
 
@@ -459,4 +537,9 @@ async function buscarTodasAgendas() {
 
 
 
-module.exports = {  buscarMedicoPorId ,buscarTodasAgendas, selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getDetalhesPaciente };
+
+
+
+
+
+module.exports = {  deletarUsuario, buscarTodasPessoas ,buscarMedicoPorId ,buscarTodasAgendas, selecionaMedicosBd, selecionaPacientesBd, insert, update, read, buscarCpf, remove, agendarConsulta, buscarPerfilPorLogin, getDetalhesPaciente };
