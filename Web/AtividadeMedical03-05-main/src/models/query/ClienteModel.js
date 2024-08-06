@@ -506,39 +506,30 @@ async function deletarUsuario(userId, enderecoId) {
 
 
     async function buscarTodasPessoas() {
-        const connection = await conectarBancoDeDados();
-        try {
-            const [rows] = await connection.query(`
-                SELECT 
-                    p.id,
-                    p.nome,
-                    p.email,
-                    CASE 
-                        WHEN pa.id IS NOT NULL THEN 'Paciente'
-                        WHEN f.id IS NOT NULL THEN 'Funcionario'
-                        ELSE 'Outro'
-                    END AS categoria
-                FROM tbl_pessoa p
-                LEFT JOIN tbl_paciente pa ON p.id = pa.pessoa_id
-                LEFT JOIN tbl_funcionario f ON p.id = f.pessoa_id;
-            `);
-            return rows;
-        } catch (error) {
-            console.error("Erro ao buscar pessoas:", error.message);
-            throw new Error("Erro ao buscar pessoas.");
-        } finally {
-            connection.end();
-        }
+    const connection = await conectarBancoDeDados();
+    try {
+        const [rows] = await connection.query(`
+            SELECT 
+                p.id,
+                p.nome,
+                p.email,
+                CASE 
+                    WHEN pa.id IS NOT NULL THEN 'Paciente'
+                    WHEN f.id IS NOT NULL THEN 'Medico'
+                    ELSE 'Outro'
+                END AS categoria
+            FROM tbl_pessoa p
+            LEFT JOIN tbl_paciente pa ON p.id = pa.pessoa_id
+            LEFT JOIN tbl_funcionario f ON p.id = f.pessoa_id;
+        `);
+        return rows;
+    } catch (error) {
+        console.error("Erro ao buscar pessoas:", error.message);
+        throw new Error("Erro ao buscar pessoas.");
+    } finally {
+        await connection.end();
     }
-
-
-
-
-
-
-
-
-
+}
 
 
 
