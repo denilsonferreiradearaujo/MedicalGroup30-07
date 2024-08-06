@@ -208,46 +208,31 @@ async function remove(cpf) {
 
 async function agendarConsulta(consulta) {
     const connection = await conectarBancoDeDados();
-    console.log(consulta)
+    console.log(consulta);
 
     try {
-        // Recupera os dados necessários
+        // Recupera os dados do paciente
         const [pacienteRows] = await connection.query(`
             SELECT 
                 tbl_paciente.id AS paciente_id, 
-                tbl_paciente.pessoa_id AS paciente_pessoa_id, 
-                tbl_funcionario.id AS funcionario_id, 
-                tbl_funcionario.pessoa_id AS funcionario_pessoa_id
+                tbl_paciente.pessoa_id AS paciente_pessoa_id
             FROM 
                 tbl_paciente
-            INNER JOIN 
-                tbl_pessoa AS paciente_pessoa ON tbl_paciente.pessoa_id = paciente_pessoa.id
-            INNER JOIN 
-                tbl_funcionario ON tbl_funcionario.pessoa_id = paciente_pessoa.id
-            INNER JOIN 
-                tbl_pessoa AS funcionario_pessoa ON tbl_funcionario.pessoa_id = funcionario_pessoa.id
-            WHERE 
-                tbl_paciente.id = ?` ,
-            [consulta.funcionario_id]
-        );
-
-        const [funcionarioRows] = await connection.query(`
-            SELECT 
-                tbl_paciente.id AS paciente_id, 
-                tbl_paciente.pessoa_id AS paciente_pessoa_id, 
-                tbl_funcionario.id AS funcionario_id, 
-                tbl_funcionario.pessoa_id AS funcionario_pessoa_id
-            FROM 
-                tbl_paciente
-            INNER JOIN 
-                tbl_pessoa AS paciente_pessoa ON tbl_paciente.pessoa_id = paciente_pessoa.id
-            INNER JOIN 
-                tbl_funcionario ON tbl_funcionario.pessoa_id = paciente_pessoa.id
-            INNER JOIN 
-                tbl_pessoa AS funcionario_pessoa ON tbl_funcionario.pessoa_id = funcionario_pessoa.id
             WHERE 
                 tbl_paciente.id = ?`,
             [consulta.paciente_id]
+        );
+
+        // Recupera os dados do funcionário
+        const [funcionarioRows] = await connection.query(`
+            SELECT 
+                tbl_funcionario.id AS funcionario_id, 
+                tbl_funcionario.pessoa_id AS funcionario_pessoa_id
+            FROM 
+                tbl_funcionario
+            WHERE 
+                tbl_funcionario.id = ?`,
+            [consulta.funcionario_id]
         );
 
         console.log(pacienteRows);
@@ -259,16 +244,15 @@ async function agendarConsulta(consulta) {
 
         const { paciente_id, paciente_pessoa_id } = pacienteRows[0];
         const { funcionario_id, funcionario_pessoa_id } = funcionarioRows[0];
+        
         console.log(consulta);
-        // Insere os dados no banco de dados
 
-        /**
-         * 
-         */
+        // Insere os dados no banco de dados
         await connection.query(`
-        INSERT INTO tbl_consulta (data, hora, status, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [consulta.data, consulta.hora, 0, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id]);
+            INSERT INTO tbl_consulta (data, hora, status, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)`,
+            [consulta.data, consulta.hora, 0, paciente_id, paciente_pessoa_id, funcionario_id, funcionario_pessoa_id]
+        );
 
         return { status: 200, message: "Consulta agendada com sucesso!" };
     } catch (error) {
