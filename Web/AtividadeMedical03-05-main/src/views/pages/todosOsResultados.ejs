@@ -183,7 +183,7 @@
             <p><strong>Data:</strong> <%= consulta.data %></p>
           </div>
           <div>
-            <button class="botao_prontuario" > <!-- onclick="openModal('<%= consulta.prontuario_url %>')" -->
+            <button class="botao_prontuario" onclick="openModal('<%= consulta.prontuario_url %>')" > <!--  -->
               Último prontuário
             </button>
           </div>
@@ -202,10 +202,10 @@
   </div>
 
   <script>
-    // function openModal(url) {
-    //   document.getElementById("modalIframe").src = url;
-    //   document.getElementById("myModal").style.display = "flex";
-    // }
+    function openModal(url) {
+      document.getElementById("modalIframe").src = url;
+      document.getElementById("myModal").style.display = "flex";
+    }
 
     function closeModal() {
       document.getElementById("myModal").style.display = "none";
