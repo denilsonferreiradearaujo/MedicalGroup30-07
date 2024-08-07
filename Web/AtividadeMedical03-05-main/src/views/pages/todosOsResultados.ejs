@@ -63,6 +63,7 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
       .container_linha {
+        width: 80%;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -80,6 +81,7 @@
         display: flex;
         flex-direction: column;
         width: 80%;
+
       }
       .dados_linha p {
         margin: 5px 0;
@@ -181,7 +183,7 @@
             <p><strong>Data:</strong> <%= consulta.data %></p>
           </div>
           <div>
-            <button class="botao_prontuario" onclick="openModal('<%= consulta.prontuario_url %>')">
+            <button class="botao_prontuario" > <!-- onclick="openModal('<%= consulta.prontuario_url %>')" -->
               Último prontuário
             </button>
           </div>
@@ -200,10 +202,10 @@
   </div>
 
   <script>
-    function openModal(url) {
-      document.getElementById("modalIframe").src = url;
-      document.getElementById("myModal").style.display = "flex";
-    }
+    // function openModal(url) {
+    //   document.getElementById("modalIframe").src = url;
+    //   document.getElementById("myModal").style.display = "flex";
+    // }
 
     function closeModal() {
       document.getElementById("myModal").style.display = "none";
