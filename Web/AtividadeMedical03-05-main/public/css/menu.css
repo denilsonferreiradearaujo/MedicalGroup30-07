@@ -28,3 +28,7 @@ header span {
     margin-left: 10px;
 }
 
+.bg-body-tertiary{
+    background-color: transparent !important;
+}
+
