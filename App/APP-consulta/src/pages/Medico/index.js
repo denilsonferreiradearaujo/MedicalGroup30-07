@@ -4,65 +4,78 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    Alert,
+    TouchableOpacity,
     FlatList
 } from 'react-native';
-import api from '../../service/api';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Medico = ({ route }) => {
+const Medico = () => {
     const [consultas, setConsultas] = useState([]);
     const [medico, setMedico] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [medicoId, setMedicoId] = useState(null);
-
-    // Acessa o parâmetro `email` de forma segura
-    const { email } = route.params || {};
 
     useEffect(() => {
-        console.log('Parâmetros da rota:', route.params); // Verifique se os parâmetros estão corretos
-
-        if (!email) {
-            Alert.alert('Erro', 'Email do médico não fornecido.');
-            setLoading(false); // Para evitar que a tela continue carregando
-            return;
-        }
-
-        const fetchMedicoId = async () => {
-            try {
-                const response = await api.get(`/medicos/byEmail/${email}`);
-                const id = response.data.id; // Ajuste conforme a estrutura da resposta da API
-                setMedicoId(id);
-            } catch (err) {
-                setError('Erro ao buscar ID do médico');
-                Alert.alert('Erro', 'Não foi possível obter o ID do médico.');
-                setLoading(false);
-            }
-        };
-
-        fetchMedicoId();
-    }, [email]);
-
-    useEffect(() => {
-        if (!medicoId) return;
-
+        // Simular a obtenção de dados
         const fetchMedicoData = async () => {
             try {
-                const medicoResponse = await api.get(`/todosOsResultadosMobile/${medicoId}`);
-                setMedico(medicoResponse.data);
+                // Dados simulados
+                const simulatedMedicoData = {
+                    nome: 'Dr. João Silva',
+                    cpf: '123.456.789-00',
+                    email: 'joao.silva@clinica.com',
+                    telefone: '(11) 98765-4321',
+                    especialidade: 'Cardiologista'
+                };
+                const simulatedConsultasData = [
+                    { id: 1, data: '2024-08-01', paciente: 'Ana Costa' },
+                    { id: 2, data: '2024-08-05', paciente: 'Carlos Souza' }
+                ];
 
-                const consultasResponse = await api.get(`/consultas/medico/${medicoId}`);
-                setConsultas(consultasResponse.data);
+                setMedico(simulatedMedicoData);
+                setConsultas(simulatedConsultasData);
             } catch (err) {
                 setError('Erro ao carregar dados');
-                Alert.alert('Erro', 'Não foi possível carregar os dados do médico e consultas.');
+                // Alert.alert('Erro', 'Não foi possível carregar os dados do médico e consultas.'); // Descomente se necessário
             } finally {
                 setLoading(false);
             }
         };
 
         fetchMedicoData();
-    }, [medicoId]);
+    }, []);
+
+    const refreshData = () => {
+        setLoading(true);
+        setError(null);
+        // Simular nova obtenção de dados
+        const fetchMedicoData = async () => {
+            try {
+                // Dados simulados
+                const simulatedMedicoData = {
+                    nome: 'Dr. João Silva',
+                    cpf: '123.456.789-00',
+                    email: 'joao.silva@clinica.com',
+                    telefone: '(11) 98765-4321',
+                    especialidade: 'Cardiologista'
+                };
+                const simulatedConsultasData = [
+                    { id: 1, data: '2024-08-01', paciente: 'Ana Costa' },
+                    { id: 2, data: '2024-08-05', paciente: 'Carlos Souza' }
+                ];
+
+                setMedico(simulatedMedicoData);
+                setConsultas(simulatedConsultasData);
+            } catch (err) {
+                setError('Erro ao carregar dados');
+                // Alert.alert('Erro', 'Não foi possível carregar os dados do médico e consultas.'); // Descomente se necessário
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMedicoData();
+    };
 
     if (loading) {
         return (
@@ -77,6 +90,10 @@ const Medico = ({ route }) => {
         return (
             <View style={styles.container}>
                 <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity onPress={refreshData} style={styles.refreshButton}>
+                    <Icon name="refresh" size={24} color="#fff" />
+                    <Text style={styles.refreshButtonText}>Tentar Novamente</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -128,6 +145,20 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 18,
         textAlign: 'center',
+    },
+    refreshButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#0288d1',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    refreshButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        marginLeft: 8,
     },
     medicoInfo: {
         backgroundColor: '#ffffff',
