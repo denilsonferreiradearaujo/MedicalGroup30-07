@@ -4,28 +4,52 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    Alert,
+    TouchableOpacity,
     FlatList
 } from 'react-native';
-import api from '../../service/api';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const Paciente = () => {
+const PacienteConsultas = () => {
     const [consultas, setConsultas] = useState([]);
     const [paciente, setPaciente] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Simular a obtenção de dados
         const fetchPacienteData = async () => {
             try {
-                const pacienteResponse = await api.get('/paciente/1'); // Altere para o ID correto
-                setPaciente(pacienteResponse.data);
+                // Dados simulados
+                const simulatedPacienteData = {
+                    nome: 'Ana Costa',
+                    cpf: '123.456.789-00',
+                    email: 'ana.costa@exemplo.com',
+                    telefone: '(11) 98765-4321'
+                };
 
-                const consultasResponse = await api.get('/consultas/paciente/1'); // Altere para o ID correto
-                setConsultas(consultasResponse.data);
+                const simulatedConsultasData = [
+                    {
+                        id: 1,
+                        data: '2024-08-10',
+                        medico: {
+                            nome: 'Dr. João Silva',
+                            especialidade: 'Cardiologista'
+                        }
+                    },
+                    {
+                        id: 2,
+                        data: '2024-08-15',
+                        medico: {
+                            nome: 'Dr. Maria Oliveira',
+                            especialidade: 'Dermatologista'
+                        }
+                    }
+                ];
+
+                setPaciente(simulatedPacienteData);
+                setConsultas(simulatedConsultasData);
             } catch (err) {
                 setError('Erro ao carregar dados');
-                Alert.alert('Erro', 'Não foi possível carregar os dados do paciente e consultas.');
             } finally {
                 setLoading(false);
             }
@@ -33,6 +57,12 @@ const Paciente = () => {
 
         fetchPacienteData();
     }, []);
+
+    const refreshData = () => {
+        setLoading(true);
+        setError(null);
+        fetchPacienteData();
+    };
 
     if (loading) {
         return (
@@ -47,6 +77,10 @@ const Paciente = () => {
         return (
             <View style={styles.container}>
                 <Text style={styles.errorText}>{error}</Text>
+                <TouchableOpacity onPress={refreshData} style={styles.refreshButton}>
+                    <Icon name="refresh" size={24} color="#fff" />
+                    <Text style={styles.refreshButtonText}>Tentar Novamente</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -62,7 +96,7 @@ const Paciente = () => {
             </View>
 
             <View style={styles.consultasContainer}>
-                <Text style={styles.title}>Consultas</Text>
+                <Text style={styles.title}>Consultas Agendadas</Text>
                 {consultas.length > 0 ? (
                     <FlatList
                         data={consultas}
@@ -70,7 +104,8 @@ const Paciente = () => {
                         renderItem={({ item }) => (
                             <View style={styles.consulta}>
                                 <Text style={styles.consultaText}>Data: {item.data}</Text>
-                                <Text style={styles.consultaText}>Médico: {item.medico}</Text>
+                                <Text style={styles.consultaText}>Médico: {item.medico.nome}</Text>
+                                <Text style={styles.consultaText}>Especialidade: {item.medico.especialidade}</Text>
                             </View>
                         )}
                     />
@@ -97,6 +132,20 @@ const styles = StyleSheet.create({
         color: 'red',
         fontSize: 18,
         textAlign: 'center',
+    },
+    refreshButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#0288d1',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 20,
+    },
+    refreshButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        marginLeft: 8,
     },
     pacienteInfo: {
         backgroundColor: '#ffffff',
@@ -138,4 +187,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Paciente;
+export default PacienteConsultas;
