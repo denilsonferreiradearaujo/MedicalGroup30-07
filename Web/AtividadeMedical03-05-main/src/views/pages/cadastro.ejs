@@ -293,17 +293,16 @@
   </div>
 </div>
 
-
-<!-- Modal -->
-<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+<!-- Modal de Sucesso -->
+<div class="modal fade" id="modalSucesso" tabindex="-1" aria-labelledby="modalSucessoLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="successModalLabel">Cadastro realizado com sucesso!</h5>
+        <h5 class="modal-title" id="modalSucessoLabel">Cadastro Realizado com Sucesso</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        Seu cadastro foi realizado com sucesso. Você pode agora fazer login para acessar seu perfil.
+        Seu cadastro foi realizado com sucesso.
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
@@ -400,13 +399,38 @@
     document.querySelector('input[name="cep"]').addEventListener('blur', buscarEndereco);
   });
 
-  function showSuccessModal(event) {
-      event.preventDefault(); // Evita o envio do formulário para exibir o modal
-      var myModal = new bootstrap.Modal(document.getElementById('successModal'), {
-        keyboard: false
-      });
-      myModal.show();
-    }
+  // Exibe o modal de sucesso e limpa o formulário quando o formulário é enviado
+  const form = document.querySelector('form');
+  form.addEventListener('submit', function(event) {
+    event.preventDefault(); // Impede o envio padrão do formulário
+
+    // Aqui você deve adicionar a lógica para enviar o formulário via fetch ou outra técnica AJAX
+    fetch('/cadastro', {
+      method: 'POST',
+      body: new FormData(form)
+    })
+    .then(response => {
+      if (response.ok) {
+        // Mostra o modal de sucesso
+        const modalSucesso = new bootstrap.Modal(document.getElementById('modalSucesso'));
+        modalSucesso.show();
+
+        // Limpa o formulário
+        form.reset();
+        // Opcional: Se houver campos que precisam de valores padrão, você pode redefini-los aqui
+        preencherSenha(); // Se desejar gerar uma nova senha
+
+      } else {
+        // Caso ocorra um erro, você pode mostrar um outro modal ou usar um alert
+        alert('Ocorreu um erro ao realizar o cadastro. Por favor, tente novamente.');
+      }
+    })
+    .catch(error => {
+      console.error('Erro ao enviar o formulário:', error);
+      alert('Erro ao enviar o formulário. Por favor, tente novamente.');
+    });
+  });
+
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"
