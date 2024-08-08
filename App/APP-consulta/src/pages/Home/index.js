@@ -11,21 +11,7 @@ const Home = ({ navigation }) => {
                     Nossa clínica oferece os melhores serviços de saúde com uma equipe altamente qualificada e dedicada ao seu bem-estar. Venha nos visitar e confira todos os nossos serviços.
                 </Text>
 
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Paciente')}>
-                    <Image
-                        source={require('../../assets/v987-18a.jpg')} // Caminho para a imagem de pacientes
-                        style={styles.cardImage}
-                    />
-                    <Text style={styles.cardTitle}>Área do Paciente</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('Medico')}>
-                    <Image
-                        source={require('../../assets/v987-18a.jpg')} // Caminho para a imagem de médicos
-                        style={styles.cardImage}
-                    />
-                    <Text style={styles.cardTitle}>Área do Médico</Text>
-                </TouchableOpacity>
+                
                
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Nossos Serviços</Text>
